@@ -9,7 +9,7 @@ export async function createEmbedding(text: string): Promise<number[]> {
     },
     {
       headers: {
-        Authorization: `Bearer jina_33b1093f89f443eebd65fafde2c3620aVk1e1o_73pr9ysSJQBvZkb-8s6A7`,
+        Authorization: `Bearer ${process.env.JINA_API_KEY}`,
       },
     }
   );
