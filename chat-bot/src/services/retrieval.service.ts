@@ -3,7 +3,7 @@ import { qdrantClient } from "../config/qdrant";
 const COLLECTION = process.env.QDRANT_COLLECTION || "news_vectors";
 export async function retrieveArticles(
   embedding: number[],
-  limit = 5
+  limit = 1
 ): Promise<string> {
   if (!embedding || embedding.length === 0) {
     throw new Error("Query embedding is empty");

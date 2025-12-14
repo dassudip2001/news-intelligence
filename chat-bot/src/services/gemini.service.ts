@@ -1,15 +1,13 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY!,
+});
 
 export async function generateAnswer(
   context: string,
   query: string
 ): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-  });
-
   const prompt = `
 You are a news intelligence assistant.
 
@@ -21,8 +19,16 @@ ${context}
 
 Question:
 ${query}
-  `;
+`;
 
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini", // cheap + fast + good for RAG
+    temperature: 0.2,
+    messages: [
+      { role: "system", content: "You are a helpful news assistant." },
+      { role: "user", content: prompt },
+    ],
+  });
+
+  return response.choices[0]?.message.content ?? "";
 }
