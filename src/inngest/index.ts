@@ -18,23 +18,19 @@ const helloWorld = inngest.createFunction(
 // fetch news form rss feed
 const news = inngest.createFunction(
   { id: "news" },
-  { cron: "*/15 * * * *" },
+  { cron: "*/55 * * * *" },
   async ({ event, step }) => {
-    const articles = await step.run("fetch-news", async () => {
-      const articles = await fetchNewsFromRSS(50);
-      console.log("articals", articles.length);
-    });
+    const articles = await step.run("fetch-news", async () =>
+      fetchNewsFromRSS(50)
+    );
 
-    const ingestRespose = await step.run("store-in-qdrant", async () => {
-      console.log("..............................");
-
-      // await ingestArticlesToVectorDB(articles);
-    });
+    const ingestRespose = await step.run(
+      "store-in-qdrant",
+      async () => await ingestArticlesToVectorDB(articles)
+    );
 
     return {
-      success: true,
-      message: "Articles ingested successfully",
-      data: ingestRespose,
+      ...ingestRespose,
     };
   }
 );
