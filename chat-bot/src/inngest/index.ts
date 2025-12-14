@@ -7,7 +7,7 @@ export const inngest = new Inngest({ id: "my-app" });
 // fetch news form rss feed
 const news = inngest.createFunction(
   { id: "news" },
-  { cron: "*/55 * * * *" },
+  { event: "rss/fetch" },
   async ({ step }) => {
     const articles = await step.run("fetch-news", async () =>
       fetchNewsFromRSS(50)

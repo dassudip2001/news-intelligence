@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest";
 import chatRoutes from "./route/chat.route";
+import ingestRoutes from "./route/inggest.route";
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(morgan("dev"));
 
 // chat
 app.use("/api/chat", chatRoutes);
+
+// ingest routes
+app.use("/api/tranning", ingestRoutes);
 
 // inngest router
 app.use("/api/inngest", serve({ client: inngest, functions }));
