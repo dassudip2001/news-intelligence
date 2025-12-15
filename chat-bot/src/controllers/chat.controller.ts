@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { createEmbedding } from "../services/embedding.service";
 import { generateAnswer } from "../services/gemini.service";
 import { retrieveArticles } from "../services/retrieval.service";
+import { prisma } from "../config/prismaClient";
+import { v4 as uuidv4 } from "uuid";
 
 export async function chat(req: Request, res: Response) {
   const { query } = req.body;
@@ -28,6 +30,16 @@ export async function chat(req: Request, res: Response) {
 
   // 3️ Gemini response
   const answer = await generateAnswer(context, query);
+
+  // 4️ Save interaction to database
+  await prisma.interaction.create({
+    data: {
+      sessionId: uuidv4(),
+      userQuery: query,
+      llmResponse: answer,
+      responseTimeMs: Date.now() - startTime,
+    },
+  });
 
   return res.json({
     answer,
